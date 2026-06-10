@@ -7,6 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import '../features/auth/data/datasource/auth_remote_datasource.dart';
 import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/repositories/auth_repository.dart';
+import '../features/auth/presentation/bloc/auth_bloc.dart';
 
 final sl = GetIt.instance;
 
@@ -18,7 +19,6 @@ Future<void> configureDependencies() async {
   sl.registerLazySingleton<LocalStorageService>(
     () => LocalStorageServiceImpl(sl<SharedPreferences>()),
   );
-
   // Supabase
 
   sl.registerLazySingleton<SupabaseClient>(() => Supabase.instance.client);
@@ -33,5 +33,8 @@ Future<void> configureDependencies() async {
 
   sl.registerLazySingleton<AuthRepository>(
     () => AuthRepositoryImpl(sl<AuthRemoteDataSource>()),
+  );
+  sl.registerFactory<AuthBloc>(
+    () => AuthBloc(authRepository: sl<AuthRepository>()),
   );
 }
