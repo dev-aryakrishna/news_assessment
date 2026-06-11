@@ -7,9 +7,7 @@ import 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final AuthRepository authRepository;
 
-  AuthBloc({
-    required this.authRepository,
-  }) : super(AuthInitial()) {
+  AuthBloc({required this.authRepository}) : super(AuthInitial()) {
     on<LoginRequested>(_onLoginRequested);
     on<SignUpRequested>(_onSignUpRequested);
     on<LogoutRequested>(_onLogoutRequested);
@@ -20,16 +18,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     LoginRequested event,
     Emitter<AuthState> emit,
   ) async {
+    print('Login Event Received');
+
     emit(AuthLoading());
 
     try {
-      await authRepository.login(
-        email: event.email,
-        password: event.password,
-      );
+      await authRepository.login(email: event.email, password: event.password);
 
       emit(AuthAuthenticated());
     } catch (e) {
+      print('LOGIN ERROR: $e');
+
       emit(AuthFailure(e.toString()));
     }
   }
@@ -38,28 +37,36 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     SignUpRequested event,
     Emitter<AuthState> emit,
   ) async {
+    print('Signup Event Received');
     emit(AuthLoading());
 
     try {
       await authRepository.signUp(
+        fullName: event.fullName,
+        phone: event.phone,
         email: event.email,
         password: event.password,
       );
 
       emit(AuthUnauthenticated());
     } catch (e) {
+       print('SIGNUP ERROR: $e');
       emit(AuthFailure(e.toString()));
     }
   }
 
   Future<void> _onLogoutRequested(
-    LogoutRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    await authRepository.logout();
+  LogoutRequested event,
+  Emitter<AuthState> emit,
+) async {
+  print('Logout Event Received');
 
-    emit(AuthUnauthenticated());
-  }
+  await authRepository.logout();
+
+  print('Logout Success');
+
+  emit(AuthUnauthenticated());
+}
 
   Future<void> _onCheckSessionRequested(
     CheckSessionRequested event,

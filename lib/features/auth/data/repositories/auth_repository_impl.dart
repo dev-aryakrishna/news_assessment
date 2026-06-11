@@ -13,6 +13,7 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
   }) async {
+    print('Repository Login Called');
     final response = await remoteDataSource.login(
       email: email,
       password: password,
@@ -24,18 +25,20 @@ class AuthRepositoryImpl implements AuthRepository {
       throw Exception('User not found');
     }
 
-    return UserModel.fromSupabaseUser(
-      user.id,
-      user.email ?? '',
-    );
+    return UserModel.fromSupabaseUser(user.id, user.email ?? '');
   }
 
   @override
   Future<void> signUp({
+    required String fullName,
+    required String phone,
     required String email,
     required String password,
   }) async {
+    print('Repository Signup Called');
     await remoteDataSource.signUp(
+      fullName: fullName,
+      phone: phone,
       email: email,
       password: password,
     );
@@ -43,10 +46,11 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<void> logout() async {
+    print('Repository Logout Called');
+
     await remoteDataSource.logout();
   }
 
   @override
-  bool get isLoggedIn =>
-      remoteDataSource.getCurrentSession() != null;
+  bool get isLoggedIn => remoteDataSource.getCurrentSession() != null;
 }

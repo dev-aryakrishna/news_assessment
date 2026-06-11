@@ -5,6 +5,7 @@ import '../features/auth/presentation/pages/signup_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/news/presentation/pages/news_detail_page.dart';
 import '../features/news/presentation/pages/news_list_page.dart';
+
 import 'route_names.dart';
 
 final appRouter = GoRouter(
@@ -16,7 +17,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: RouteNames.login,
-      builder: (context, state) => const LoginPage(),
+     builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
       path: RouteNames.signup,

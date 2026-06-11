@@ -1,12 +1,11 @@
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 abstract class AuthRemoteDataSource {
-  Future<AuthResponse> login({
-    required String email,
-    required String password,
-  });
+  Future<AuthResponse> login({required String email, required String password});
 
   Future<AuthResponse> signUp({
+    required String fullName,
+    required String phone,
     required String email,
     required String password,
   });
@@ -16,8 +15,7 @@ abstract class AuthRemoteDataSource {
   Session? getCurrentSession();
 }
 
-class AuthRemoteDataSourceImpl
-    implements AuthRemoteDataSource {
+class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   final SupabaseClient supabase;
 
   AuthRemoteDataSourceImpl(this.supabase);
@@ -27,26 +25,45 @@ class AuthRemoteDataSourceImpl
     required String email,
     required String password,
   }) async {
-    return await supabase.auth.signInWithPassword(
+    print('Datasource Login Called');
+
+    final response = await supabase.auth.signInWithPassword(
       email: email,
       password: password,
     );
+
+    print('Datasource Login Success');
+
+    return response;
   }
 
   @override
   Future<AuthResponse> signUp({
+    required String fullName,
+    required String phone,
     required String email,
     required String password,
   }) async {
-    return await supabase.auth.signUp(
+    print('Datasource Signup Called');
+
+    final response = await supabase.auth.signUp(
       email: email,
       password: password,
+      data: {'full_name': fullName, 'phone': phone},
     );
+
+    print('Datasource Signup Success');
+
+    return response;
   }
 
   @override
   Future<void> logout() async {
+    print('Datasource Logout Called');
+
     await supabase.auth.signOut();
+
+    print('Datasource Logout Success');
   }
 
   @override
