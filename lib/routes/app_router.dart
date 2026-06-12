@@ -1,5 +1,8 @@
 import 'package:go_router/go_router.dart';
-
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../features/news/domain/entities/news_entity.dart';
+import '../dependency_injection/injection.dart';
+import '../features/news/presentation/bloc/news_bloc.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/signup_page.dart';
 import '../features/auth/presentation/pages/splash_page.dart';
@@ -17,7 +20,7 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: RouteNames.login,
-     builder: (context, state) => const LoginPage(),
+      builder: (context, state) => const LoginPage(),
     ),
     GoRoute(
       path: RouteNames.signup,
@@ -25,11 +28,15 @@ final appRouter = GoRouter(
     ),
     GoRoute(
       path: RouteNames.news,
-      builder: (context, state) => const NewsListPage(),
+      builder: (context, state) => BlocProvider(
+        create: (_) => sl<NewsBloc>(),
+        child: const NewsListPage(),
+      ),
     ),
     GoRoute(
       path: RouteNames.newsDetail,
-      builder: (context, state) => const NewsDetailPage(),
+      builder: (context, state) =>
+          NewsDetailPage(article: state.extra as NewsEntity),
     ),
   ],
 );

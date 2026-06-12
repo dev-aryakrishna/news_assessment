@@ -3,11 +3,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import '../core/services/local_storage_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-
+import '../features/news/presentation/bloc/news_bloc.dart';
 import '../features/auth/data/datasource/auth_remote_datasource.dart';
 import '../features/auth/data/repositories/auth_repository_impl.dart';
 import '../features/auth/domain/repositories/auth_repository.dart';
 import '../features/auth/presentation/bloc/auth_bloc.dart';
+import '../core/network/dio_client.dart';
+import '../features/news/data/datasource/news_remote_datasource.dart';
+import '../features/news/data/repositories/news_repository_impl.dart';
+import '../features/news/domain/repositories/news_repository.dart';
 
 final sl = GetIt.instance;
 
@@ -36,5 +40,25 @@ Future<void> configureDependencies() async {
   );
   sl.registerFactory<AuthBloc>(
     () => AuthBloc(authRepository: sl<AuthRepository>()),
+  );
+
+  // Network
+
+  sl.registerLazySingleton<DioClient>(() => DioClient());
+
+  // News DataSource
+
+  sl.registerLazySingleton<NewsRemoteDataSource>(
+    () => NewsRemoteDataSourceImpl(sl<DioClient>()),
+  );
+
+  // News Repository
+
+  sl.registerLazySingleton<NewsRepository>(
+    () => NewsRepositoryImpl(sl<NewsRemoteDataSource>()),
+  );
+
+  sl.registerFactory<NewsBloc>(
+    () => NewsBloc(newsRepository: sl<NewsRepository>()),
   );
 }
