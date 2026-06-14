@@ -1,5 +1,4 @@
 import 'package:json_annotation/json_annotation.dart';
-
 import '../../domain/entities/news_entity.dart';
 
 part 'news_model.g.dart';
@@ -27,7 +26,8 @@ class NewsModel {
   @JsonKey(defaultValue: '')
   final String publishedAt;
 
-  @JsonKey(fromJson: _sourceFromJson)
+  // 👇 added toJson converter so source saves as Map, not String
+  @JsonKey(fromJson: _sourceFromJson, toJson: _sourceToJson)
   final String source;
 
   const NewsModel({
@@ -44,8 +44,7 @@ class NewsModel {
   factory NewsModel.fromJson(Map<String, dynamic> json) =>
       _$NewsModelFromJson(json);
 
-  Map<String, dynamic> toJson() =>
-      _$NewsModelToJson(this);
+  Map<String, dynamic> toJson() => _$NewsModelToJson(this);
 
   NewsEntity toEntity() {
     return NewsEntity(
@@ -60,7 +59,19 @@ class NewsModel {
     );
   }
 
-  static String _sourceFromJson(Map<String, dynamic>? source) {
-    return source?['name'] ?? '';
+  static String _sourceFromJson(dynamic source) {
+    // 👇 handles both Map (from API) and String (from cache)
+    if (source is Map<String, dynamic>) {
+      return source['name'] ?? '';
+    }
+    if (source is String) {
+      return source;
+    }
+    return '';
+  }
+
+  // 👇 added - saves source as Map so fromJson can always read it
+  static Map<String, dynamic> _sourceToJson(String source) {
+    return {'name': source};
   }
 }

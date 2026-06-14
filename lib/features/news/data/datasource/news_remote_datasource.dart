@@ -19,6 +19,7 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
   @override
   Future<List<NewsModel>> getTopHeadlines({required int page}) async {
     try {
+      print('PAGE: $page');
       final response = await dioClient.dio.get(
         '/top-headlines',
         queryParameters: {'country': 'us', 'page': page, 'pageSize': 20},

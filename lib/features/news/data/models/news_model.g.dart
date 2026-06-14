@@ -14,7 +14,7 @@ NewsModel _$NewsModelFromJson(Map<String, dynamic> json) => NewsModel(
   author: json['author'] as String? ?? '',
   articleUrl: json['url'] as String? ?? '',
   publishedAt: json['publishedAt'] as String? ?? '',
-  source: NewsModel._sourceFromJson(json['source'] as Map<String, dynamic>?),
+  source: NewsModel._sourceFromJson(json['source']),
 );
 
 Map<String, dynamic> _$NewsModelToJson(NewsModel instance) => <String, dynamic>{
@@ -25,5 +25,5 @@ Map<String, dynamic> _$NewsModelToJson(NewsModel instance) => <String, dynamic>{
   'author': instance.author,
   'url': instance.articleUrl,
   'publishedAt': instance.publishedAt,
-  'source': instance.source,
+  'source': NewsModel._sourceToJson(instance.source),
 };

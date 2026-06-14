@@ -1,5 +1,4 @@
 import 'package:equatable/equatable.dart';
-
 import '../../domain/entities/news_entity.dart';
 
 abstract class NewsState extends Equatable {
@@ -23,17 +22,15 @@ class NewsLoaded extends NewsState {
   });
 
   @override
-  List<Object?> get props => [
-        articles,
-        hasReachedMax,
-      ];
+  List<Object?> get props => [articles, hasReachedMax];
 }
 
 class NewsError extends NewsState {
   final String message;
+  final List<NewsEntity>? cachedArticles; // 👈 added
 
-  const NewsError(this.message);
+  const NewsError(this.message, {this.cachedArticles});
 
   @override
-  List<Object?> get props => [message];
+  List<Object?> get props => [message, cachedArticles];
 }

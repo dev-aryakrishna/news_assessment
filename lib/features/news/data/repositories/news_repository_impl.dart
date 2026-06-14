@@ -1,16 +1,51 @@
 import '../../domain/entities/news_entity.dart';
 import '../../domain/repositories/news_repository.dart';
 import '../datasource/news_remote_datasource.dart';
+import 'dart:convert';
+import '../../../../core/services/local_storage_service.dart';
+import '../models/news_model.dart';
 
 class NewsRepositoryImpl implements NewsRepository {
   final NewsRemoteDataSource remoteDataSource;
+  final LocalStorageService localStorageService;
 
-  NewsRepositoryImpl(this.remoteDataSource);
+  NewsRepositoryImpl(this.remoteDataSource, this.localStorageService);
 
   @override
   Future<List<NewsEntity>> getTopHeadlines({required int page}) async {
-    final articles = await remoteDataSource.getTopHeadlines(page: page);
-    return articles.map((e) => e.toEntity()).toList();
+    try {
+      final articles = await remoteDataSource.getTopHeadlines(page: page);
+
+      if (page == 1) {
+        print('Saving cache: ${articles.length}');
+        await localStorageService.saveNews(
+          articles.map((e) => jsonEncode(e.toJson())).toList(),
+        );
+      }
+
+      return articles.map((e) => e.toEntity()).toList();
+    } catch (e) {
+      print('Loading cache...');
+
+      try {
+        final cachedNews = await localStorageService.getNews();
+        print('Cached count: ${cachedNews.length}');
+
+        if (cachedNews.isNotEmpty) {
+          final mapped = cachedNews
+              .map((e) => NewsModel.fromJson(jsonDecode(e)).toEntity())
+              .toList();
+          print('MAPPED COUNT: ${mapped.length}'); // 👈 add this
+          return mapped; // 👈 does it reach here?
+        }
+
+        print('CACHE EMPTY - rethrowing'); // 👈 add this
+        rethrow;
+      } catch (cacheError) {
+        print('CACHE ERROR: $cacheError'); // 👈 add this
+        rethrow;
+      }
+    }
   }
 
   @override
@@ -22,6 +57,19 @@ class NewsRepositoryImpl implements NewsRepository {
       query: query,
       page: page,
     );
+
     return articles.map((e) => e.toEntity()).toList();
+  }
+
+  // 👇 added
+  @override
+  Future<List<NewsEntity>> getCachedNews() async {
+    final cachedNews = await localStorageService.getNews();
+
+    if (cachedNews.isEmpty) return [];
+
+    return cachedNews
+        .map((e) => NewsModel.fromJson(jsonDecode(e)).toEntity())
+        .toList();
   }
 }

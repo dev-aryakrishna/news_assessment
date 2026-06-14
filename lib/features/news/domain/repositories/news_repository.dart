@@ -9,4 +9,6 @@ abstract class NewsRepository {
     required String query,
     required int page,
   });
+
+  Future<List<NewsEntity>> getCachedNews(); // 👈 added
 }

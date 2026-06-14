@@ -1,6 +1,6 @@
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
+import 'package:connectivity_plus/connectivity_plus.dart';
 import '../core/services/local_storage_service.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../features/news/presentation/bloc/news_bloc.dart';
@@ -12,6 +12,8 @@ import '../core/network/dio_client.dart';
 import '../features/news/data/datasource/news_remote_datasource.dart';
 import '../features/news/data/repositories/news_repository_impl.dart';
 import '../features/news/domain/repositories/news_repository.dart';
+import '../core/services/connectivity_service.dart';
+import '../core/connectivity/connectivity_cubit.dart';
 
 final sl = GetIt.instance;
 
@@ -55,10 +57,23 @@ Future<void> configureDependencies() async {
   // News Repository
 
   sl.registerLazySingleton<NewsRepository>(
-    () => NewsRepositoryImpl(sl<NewsRemoteDataSource>()),
+    () => NewsRepositoryImpl(
+      sl<NewsRemoteDataSource>(),
+      sl<LocalStorageService>(),
+    ),
   );
 
   sl.registerFactory<NewsBloc>(
     () => NewsBloc(newsRepository: sl<NewsRepository>()),
+  );
+
+  sl.registerLazySingleton<Connectivity>(() => Connectivity());
+
+  sl.registerLazySingleton<ConnectivityService>(
+    () => ConnectivityService(sl<Connectivity>()),
+  );
+
+  sl.registerFactory<ConnectivityCubit>(
+    () => ConnectivityCubit(connectivityService: sl<ConnectivityService>()),
   );
 }
