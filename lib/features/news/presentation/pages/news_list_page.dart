@@ -12,6 +12,8 @@ import '../bloc/news_state.dart';
 import '../../../../core/connectivity/connectivity_cubit.dart';
 import '../../../../core/connectivity/connectivity_state.dart';
 import '../../../../routes/route_names.dart';
+import 'package:newsapp/l10n/app_localizations.dart';
+import '../../../../features/settings/widgets/language_switcher.dart';
 
 class NewsListPage extends StatefulWidget {
   const NewsListPage({super.key});
@@ -44,7 +46,6 @@ class _NewsListPageState extends State<NewsListPage> {
     super.dispose();
   }
 
-  // 👇 Extracted reusable ListView builder
   Widget _buildArticleList({
     required List articles,
     bool hasReachedMax = true,
@@ -79,6 +80,8 @@ class _NewsListPageState extends State<NewsListPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context); // 👈 added
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthUnauthenticated) {
@@ -91,10 +94,10 @@ class _NewsListPageState extends State<NewsListPage> {
             height: 40,
             child: TextField(
               controller: _searchController,
-              decoration: const InputDecoration(
-                hintText: 'Search news...',
-                border: OutlineInputBorder(),
-                contentPadding: EdgeInsets.symmetric(horizontal: 12),
+              decoration: InputDecoration(
+                hintText: l10n.search, // 👈 localized
+                border: const OutlineInputBorder(),
+                contentPadding: const EdgeInsets.symmetric(horizontal: 12),
               ),
               onChanged: (value) {
                 if (_debounce?.isActive ?? false) {
@@ -112,6 +115,7 @@ class _NewsListPageState extends State<NewsListPage> {
             ),
           ),
           actions: [
+            const LanguageSwitcher(), // 👈 added
             IconButton(
               icon: const Icon(Icons.logout),
               onPressed: () {
@@ -122,14 +126,15 @@ class _NewsListPageState extends State<NewsListPage> {
         ),
         body: BlocBuilder<NewsBloc, NewsState>(
           builder: (context, state) {
-            print('CURRENT STATE: ${state.runtimeType}'); // 👈 add this
             if (state is NewsLoading) {
               return const Center(child: CircularProgressIndicator());
             }
 
             if (state is NewsLoaded) {
               if (state.articles.isEmpty) {
-                return const Center(child: Text('No articles found'));
+                return Center(
+                  child: Text(l10n.noArticlesFound), // 👈 localized
+                );
               }
 
               return _buildArticleList(
@@ -139,7 +144,6 @@ class _NewsListPageState extends State<NewsListPage> {
             }
 
             if (state is NewsError) {
-              // 👇 If cache exists, show it with an offline banner
               if (state.cachedArticles != null &&
                   state.cachedArticles!.isNotEmpty) {
                 return Column(
@@ -154,17 +158,17 @@ class _NewsListPageState extends State<NewsListPage> {
                               vertical: 8,
                               horizontal: 12,
                             ),
-                            child: const Row(
+                            child: Row(
                               children: [
-                                Icon(
+                                const Icon(
                                   Icons.wifi_off,
                                   size: 16,
                                   color: Colors.red,
                                 ),
-                                SizedBox(width: 8),
+                                const SizedBox(width: 8),
                                 Text(
-                                  'No internet — showing cached news',
-                                  style: TextStyle(color: Colors.red),
+                                  l10n.noInternet, // 👈 localized
+                                  style: const TextStyle(color: Colors.red),
                                 ),
                               ],
                             ),
@@ -183,17 +187,20 @@ class _NewsListPageState extends State<NewsListPage> {
                 );
               }
 
-              // 👇 No cache — show connectivity-aware error
               return BlocBuilder<ConnectivityCubit, ConnectivityState>(
                 builder: (context, connectivityState) {
                   if (connectivityState is ConnectivityOffline) {
-                    return const Center(
+                    return Center(
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          Icon(Icons.wifi_off, size: 48, color: Colors.grey),
-                          SizedBox(height: 12),
-                          Text('No Internet Connection'),
+                          const Icon(
+                            Icons.wifi_off,
+                            size: 48,
+                            color: Colors.grey,
+                          ),
+                          const SizedBox(height: 12),
+                          Text(l10n.noInternetConnection), // 👈 localized
                         ],
                       ),
                     );

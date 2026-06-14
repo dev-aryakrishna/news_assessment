@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:newsapp/l10n/app_localizations.dart';
 import '../bloc/auth_state.dart';
 import '../../../../core/utils/validators.dart';
 import '../../../../core/widgets/custom_text_field.dart';
@@ -18,7 +19,6 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final _formKey = GlobalKey<FormState>();
-
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
 
@@ -31,6 +31,8 @@ class _LoginPageState extends State<LoginPage> {
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state is AuthAuthenticated) {
@@ -38,13 +40,13 @@ class _LoginPageState extends State<LoginPage> {
         }
 
         if (state is AuthFailure) {
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(SnackBar(content: Text(state.message)));
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text(state.message)),
+          );
         }
       },
       child: Scaffold(
-        appBar: AppBar(title: const Text('Login')),
+        appBar: AppBar(title: Text(l10n.login)),
         body: Padding(
           padding: const EdgeInsets.all(16),
           child: Form(
@@ -53,37 +55,31 @@ class _LoginPageState extends State<LoginPage> {
               children: [
                 CustomTextField(
                   controller: _emailController,
-                  hintText: 'Email',
-                  validator: Validators.validateEmail,
+                  hintText: l10n.email,
+                  validator: (value) => Validators.validateEmail(context, value),
                 ),
 
                 const SizedBox(height: 16),
 
                 CustomTextField(
                   controller: _passwordController,
-                  hintText: 'Password',
+                  hintText: l10n.password,
                   obscureText: true,
-                  validator: Validators.validatePassword,
+                  validator: (value) => Validators.validatePassword(context, value),
                 ),
 
                 const SizedBox(height: 24),
 
                 PrimaryButton(
-                  text: 'Login',
+                  text: l10n.login,
                   onPressed: () {
-                    debugPrint('Button Clicked');
-
                     if (_formKey.currentState!.validate()) {
-                      debugPrint('Validation Passed');
-
                       context.read<AuthBloc>().add(
                         LoginRequested(
                           email: _emailController.text.trim(),
                           password: _passwordController.text.trim(),
                         ),
                       );
-
-                      debugPrint('Event Added');
                     }
                   },
                 ),
@@ -94,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                   onPressed: () {
                     context.push(RouteNames.signup);
                   },
-                  child: const Text("Don't have an account? Sign Up"),
+                  child: Text(l10n.dontHaveAccount),
                 ),
               ],
             ),

@@ -14,6 +14,7 @@ import '../features/news/data/repositories/news_repository_impl.dart';
 import '../features/news/domain/repositories/news_repository.dart';
 import '../core/services/connectivity_service.dart';
 import '../core/connectivity/connectivity_cubit.dart';
+import '../core/localization/localization_service.dart';
 
 final sl = GetIt.instance;
 
@@ -75,5 +76,10 @@ Future<void> configureDependencies() async {
 
   sl.registerFactory<ConnectivityCubit>(
     () => ConnectivityCubit(connectivityService: sl<ConnectivityService>()),
+  );
+
+  // configureDependencies() ഇൽ add ചെയ്യൂ:
+  sl.registerLazySingleton<LocalizationService>(
+    () => LocalizationService(sl<SharedPreferences>()),
   );
 }

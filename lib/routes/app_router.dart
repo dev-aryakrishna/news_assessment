@@ -9,7 +9,7 @@ import '../features/auth/presentation/pages/splash_page.dart';
 import '../features/news/presentation/pages/news_detail_page.dart';
 import '../features/news/presentation/pages/news_list_page.dart';
 import '../features/news/presentation/bloc/news_event.dart';
-
+import '../features/settings/pages/language_select_page.dart';
 import 'route_names.dart';
 
 final appRouter = GoRouter(
@@ -39,6 +39,10 @@ final appRouter = GoRouter(
       path: RouteNames.newsDetail,
       builder: (context, state) =>
           NewsDetailPage(article: state.extra as NewsEntity),
+    ),
+    GoRoute(
+      path: RouteNames.languageSelect,
+      builder: (context, state) => const LanguageSelectPage(),
     ),
   ],
 );

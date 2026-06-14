@@ -1,66 +1,63 @@
+import 'package:flutter/material.dart';
+import 'package:newsapp/l10n/app_localizations.dart';
+
 class Validators {
   Validators._();
 
-  static String? validateName(String? value) {
+  static String? validateName(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
-      return 'Name is required';
+      return l10n.fieldRequired;
     }
-
     return null;
   }
 
-  static String? validatePhone(String? value) {
+  static String? validatePhone(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
-      return 'Phone number is required';
+      return l10n.fieldRequired;
     }
-
     if (value.trim().length < 10) {
-      return 'Enter a valid phone number';
+      return l10n.invalidPhone;
     }
-
     return null;
   }
 
-  static String? validateEmail(String? value) {
+  static String? validateEmail(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
-      return 'Email is required';
+      return l10n.fieldRequired;
     }
-
-    final emailRegex = RegExp(
-      r'^[^@]+@[^@]+\.[^@]+$',
-    );
-
+    final emailRegex = RegExp(r'^[^@]+@[^@]+\.[^@]+$');
     if (!emailRegex.hasMatch(value.trim())) {
-      return 'Enter a valid email';
+      return l10n.invalidEmail;
     }
-
     return null;
   }
 
-  static String? validatePassword(String? value) {
+  static String? validatePassword(BuildContext context, String? value) {
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
-      return 'Password is required';
+      return l10n.fieldRequired;
     }
-
     if (value.length < 6) {
-      return 'Password must be at least 6 characters';
+      return l10n.passwordTooShort;
     }
-
     return null;
   }
 
   static String? validateConfirmPassword(
+    BuildContext context,
     String? value,
     String password,
   ) {
+    final l10n = AppLocalizations.of(context);
     if (value == null || value.trim().isEmpty) {
-      return 'Confirm password is required';
+      return l10n.fieldRequired;
     }
-
     if (value != password) {
-      return 'Passwords do not match';
+      return l10n.passwordsDoNotMatch;
     }
-
     return null;
   }
 }

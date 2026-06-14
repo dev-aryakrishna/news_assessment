@@ -34,26 +34,26 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onSignUpRequested(
-    SignUpRequested event,
-    Emitter<AuthState> emit,
-  ) async {
-    print('Signup Event Received');
-    emit(AuthLoading());
+  SignUpRequested event,
+  Emitter<AuthState> emit,
+) async {
+  print('Signup Event Received');
+  emit(AuthLoading());
 
-    try {
-      await authRepository.signUp(
-        fullName: event.fullName,
-        phone: event.phone,
-        email: event.email,
-        password: event.password,
-      );
+  try {
+    await authRepository.signUp(
+      fullName: event.fullName,
+      phone: event.phone,
+      email: event.email,
+      password: event.password,
+    );
 
-      emit(AuthUnauthenticated());
-    } catch (e) {
-       print('SIGNUP ERROR: $e');
-      emit(AuthFailure(e.toString()));
-    }
+    emit(const AuthSuccess('Account created successfully!')); // ✅ changed
+  } catch (e) {
+    print('SIGNUP ERROR: $e');
+    emit(AuthFailure(e.toString()));
   }
+}
 
   Future<void> _onLogoutRequested(
   LogoutRequested event,
@@ -79,3 +79,4 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
   }
 }
+
