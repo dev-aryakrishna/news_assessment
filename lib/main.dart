@@ -12,9 +12,9 @@ Future<void> main() async {
   await dotenv.load(fileName: '.env');
 
   await Supabase.initialize(
-  url: EnvConstants.supabaseUrl,
-  publishableKey: EnvConstants.supabaseAnonKey,
-);
+    url: EnvConstants.supabaseUrl,
+    publishableKey: EnvConstants.supabaseAnonKey,
+  );
 
   await configureDependencies();
 

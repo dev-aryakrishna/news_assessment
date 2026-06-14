@@ -48,7 +48,7 @@ class NewsRemoteDataSourceImpl implements NewsRemoteDataSource {
 
       return articles.map((article) => NewsModel.fromJson(article)).toList();
     } catch (e) {
-      throw ServerException('Failed to search news');
+      throw ServerException(e.toString());
     }
   }
 }
