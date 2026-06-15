@@ -15,7 +15,6 @@ class AuthAuthenticated extends AuthState {}
 
 class AuthUnauthenticated extends AuthState {}
 
-// ✅ Add this
 class AuthSuccess extends AuthState {
   final String message;
 

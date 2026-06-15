@@ -7,7 +7,6 @@ class LocalizationService extends ChangeNotifier {
 
   LocalizationService(this._prefs);
 
-  // 👇 check if user already selected a language
   bool get isLanguageSelected =>
       _prefs.containsKey(StorageKeys.language);
 

@@ -26,7 +26,6 @@ class NewsModel {
   @JsonKey(defaultValue: '')
   final String publishedAt;
 
-  // 👇 added toJson converter so source saves as Map, not String
   @JsonKey(fromJson: _sourceFromJson, toJson: _sourceToJson)
   final String source;
 
@@ -70,7 +69,6 @@ class NewsModel {
     return '';
   }
 
-  // 👇 added - saves source as Map so fromJson can always read it
   static Map<String, dynamic> _sourceToJson(String source) {
     return {'name': source};
   }

@@ -138,10 +138,10 @@ class _NewsListPageState extends State<NewsListPage> {
         }
       },
       child: PopScope(
-        canPop: !_isSearching, // 👈 search open ആണെങ്കിൽ pop block
+        canPop: !_isSearching, 
         onPopInvokedWithResult: (didPop, result) {
           if (!didPop && _isSearching) {
-            _closeSearch(); // 👈 search close ചെയ്യുക
+            _closeSearch();
           }
         },
         child: Scaffold(

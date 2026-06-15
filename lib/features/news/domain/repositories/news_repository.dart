@@ -10,5 +10,5 @@ abstract class NewsRepository {
     required int page,
   });
 
-  Future<List<NewsEntity>> getCachedNews(); // 👈 added
+  Future<List<NewsEntity>> getCachedNews(); 
 }

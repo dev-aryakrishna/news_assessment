@@ -35,14 +35,14 @@ class NewsRepositoryImpl implements NewsRepository {
           final mapped = cachedNews
               .map((e) => NewsModel.fromJson(jsonDecode(e)).toEntity())
               .toList();
-          print('MAPPED COUNT: ${mapped.length}'); // 👈 add this
-          return mapped; // 👈 does it reach here?
+          print('MAPPED COUNT: ${mapped.length}'); 
+          return mapped; 
         }
 
-        print('CACHE EMPTY - rethrowing'); // 👈 add this
+        print('CACHE EMPTY - rethrowing'); 
         rethrow;
       } catch (cacheError) {
-        print('CACHE ERROR: $cacheError'); // 👈 add this
+        print('CACHE ERROR: $cacheError'); 
         rethrow;
       }
     }
@@ -61,7 +61,6 @@ class NewsRepositoryImpl implements NewsRepository {
     return articles.map((e) => e.toEntity()).toList();
   }
 
-  // 👇 added
   @override
   Future<List<NewsEntity>> getCachedNews() async {
     final cachedNews = await localStorageService.getNews();

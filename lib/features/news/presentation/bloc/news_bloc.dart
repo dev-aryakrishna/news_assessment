@@ -29,8 +29,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       print(articles.first.title);
       emit(NewsLoaded(articles: articles, hasReachedMax: articles.isEmpty));
     } catch (e) {
-      // getTopHeadlines only rethrows when cache is also empty
-      // so attempt one more direct cache fetch for the UI banner
       try {
         final cachedNews = await newsRepository.getCachedNews();
         emit(NewsError(
@@ -66,7 +64,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       );
       emit(NewsLoaded(articles: articles, hasReachedMax: articles.isEmpty));
     } catch (e) {
-      // On search failure, show cached headlines with offline banner
       try {
         final cachedNews = await newsRepository.getCachedNews();
         emit(NewsError(
@@ -107,7 +104,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       isLoadingMore = false;
     } catch (e) {
       isLoadingMore = false;
-      currentPage--; // 👈 rollback page on failure
+      currentPage--; 
 
       if (state is NewsLoaded) {
         emit(state);

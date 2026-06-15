@@ -48,7 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       password: event.password,
     );
 
-    emit(const AuthSuccess('Account created successfully!')); // ✅ changed
+    emit(const AuthSuccess('Account created successfully!')); 
   } catch (e) {
     print('SIGNUP ERROR: $e');
     emit(AuthFailure(e.toString()));
