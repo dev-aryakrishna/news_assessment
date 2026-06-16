@@ -26,7 +26,6 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
     try {
       currentPage = 1;
       final articles = await newsRepository.getTopHeadlines(page: currentPage);
-      print(articles.first.title);
       emit(NewsLoaded(articles: articles, hasReachedMax: articles.isEmpty));
     } catch (e) {
       try {
@@ -91,9 +90,7 @@ class NewsBloc extends Bloc<NewsEvent, NewsState> {
       isLoadingMore = true;
 
       final articles = await newsRepository.getTopHeadlines(page: currentPage);
-      print('CURRENT: ${currentState.articles.length}');
-      print('NEW: ${articles.length}');
-      print('TOTAL: ${currentState.articles.length + articles.length}');
+     
 
       emit(
         NewsLoaded(

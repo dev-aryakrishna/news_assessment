@@ -18,7 +18,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     LoginRequested event,
     Emitter<AuthState> emit,
   ) async {
-    print('Login Event Received');
 
     emit(AuthLoading());
 
@@ -27,7 +26,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
       emit(AuthAuthenticated());
     } catch (e) {
-      print('LOGIN ERROR: $e');
 
       emit(AuthFailure(e.toString()));
     }
@@ -37,7 +35,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   SignUpRequested event,
   Emitter<AuthState> emit,
 ) async {
-  print('Signup Event Received');
   emit(AuthLoading());
 
   try {
@@ -50,7 +47,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     emit(const AuthSuccess('Account created successfully!')); 
   } catch (e) {
-    print('SIGNUP ERROR: $e');
     emit(AuthFailure(e.toString()));
   }
 }
@@ -59,11 +55,9 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   LogoutRequested event,
   Emitter<AuthState> emit,
 ) async {
-  print('Logout Event Received');
 
   await authRepository.logout();
 
-  print('Logout Success');
 
   emit(AuthUnauthenticated());
 }
